@@ -60,8 +60,10 @@ export default function Ball({ src, name, delay, flat, to }) {
       tx = 0
       ty = 0
     }
-    const onClick = () => {
-      if (to && moved < 5) window.location.hash = to
+    const onUp = (e) => {
+      if (!dragging) return
+      const moved2 = Math.abs(e.clientX - startX)
+      if (to && Math.max(moved, moved2) < 5) window.location.hash = to
     }
     const onDouble = () => {
       const tile = 360
@@ -102,7 +104,7 @@ export default function Ball({ src, name, delay, flat, to }) {
     window.addEventListener('pointercancel', endDrag)
     ballEl.addEventListener('pointerleave', onLeave)
     ballEl.addEventListener('dblclick', onDouble)
-    ballEl.addEventListener('click', onClick)
+    ballEl.addEventListener('pointerup', onUp)
     raf = requestAnimationFrame(tick)
     return () => {
       cancelAnimationFrame(raf)
@@ -112,7 +114,7 @@ export default function Ball({ src, name, delay, flat, to }) {
       window.removeEventListener('pointercancel', endDrag)
       ballEl.removeEventListener('pointerleave', onLeave)
       ballEl.removeEventListener('dblclick', onDouble)
-      ballEl.removeEventListener('click', onClick)
+      ballEl.removeEventListener('pointerup', onUp)
     }
   }, [to])
 

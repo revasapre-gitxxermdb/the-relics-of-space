@@ -1,6 +1,7 @@
+.chapter { display: contents; }
 .moon {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* sits behind the fixed surface layer, so text rises from behind the ground */
   min-height: 100vh;
   box-sizing: border-box;
   padding: 7rem 1.5rem 4rem;
@@ -41,14 +42,19 @@
 }
 
 /* ---------- Moon surface section ---------- */
-.surface {
-  position: relative;
-  z-index: 1;
+/* Scroll spacer: one screen of scrolling while the surface layer stays put */
+.surface-spacer {
   height: 100vh;
   height: 100svh;
-  display: flex;
-  align-items: flex-end;
+}
+/* Fixed layer: ground + alien stay at the bottom of the viewport; opacity is scroll-driven */
+.surface {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
   overflow: hidden;
+  opacity: 0;
   color: #fff;
 }
 .surface__ground {
@@ -80,7 +86,7 @@
 .surface__mouth {
   position: absolute;
   z-index: 2;
-  left: 50.4%;
+  left: 51.6%;
   top: 40.6%;
   width: 8%;
   height: 2.6%;
@@ -141,3 +147,11 @@
 
 /* Chapters: pause entrance animations until scrolled into view */
 .chapter:not(.is-visible) * { animation-play-state: paused !important; }
+
+/* Mars: uses its own red terrain image, with a dusty glow behind the ground */
+.surface--mars {
+  background: linear-gradient(to top, rgba(190, 80, 40, 0.38), rgba(120, 40, 20, 0.12) 45%, transparent 75%);
+}
+.surface--mars .surface__character img {
+  filter: drop-shadow(0 0 14px rgba(255, 140, 80, 0.4));
+}

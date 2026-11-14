@@ -25,9 +25,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1rem, 4vw, 4rem);
+  gap: clamp(2rem, 7vw, 7rem);
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
   perspective: 1200px;
 }
 
@@ -62,8 +62,10 @@
 .world__name:hover { background: #a82812; transform: scale(1.05); }
 
 /* Cancel the figure's inward tilt so the button always faces the viewer */
-.world:first-child figcaption { transform: rotateY(-22deg); }
-.world:last-child  figcaption { transform: rotateY(22deg); }
+/* Lift the caption in front of the ball's 3D tilt so the ball never covers the button (Mars was unclickable) */
+.world figcaption { position: relative; transform: translateZ(60px); }
+.world:first-child figcaption { transform: translateZ(60px) rotateY(-22deg); }
+.world:last-child  figcaption { transform: translateZ(60px) rotateY(22deg); }
 
 /* Click: button shrinks (press-in) */
 .world__name:active,
@@ -77,7 +79,7 @@
 @media (max-width: 700px) {
   .worlds__row { flex-direction: column; }
   .world, .world--main, .world:first-child, .world:last-child { flex: none; width: 80%; transform: none; }
-  .world:first-child figcaption, .world:last-child figcaption { transform: none; }
+  .world figcaption, .world:first-child figcaption, .world:last-child figcaption { transform: none; }
 }
 
 .world__name:active {
