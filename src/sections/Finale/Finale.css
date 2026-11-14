@@ -1,0 +1,112 @@
+/* ---------- Finale (transparent: shares the page's space background) ---------- */
+.finale {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  padding: 5rem 1.5rem;
+  box-sizing: border-box;
+  text-align: center;
+}
+.finale::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.6) 100%);
+}
+
+/* Slowly expanding orbit rings */
+.finale__rings { position: absolute; inset: 0; display: grid; place-items: center; z-index: 0; pointer-events: none; }
+.finale__rings span {
+  grid-area: 1 / 1;
+  width: min(80vw, 640px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  opacity: 0;
+  animation: ring 9s ease-out infinite;
+}
+.finale__rings span:nth-child(2) { animation-delay: 3s; }
+.finale__rings span:nth-child(3) { animation-delay: 6s; }
+@keyframes ring {
+  0%   { transform: scale(0.35); opacity: 0; }
+  20%  { opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.finale__content {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.finale__eyebrow,
+.finale__quote,
+.finale__line,
+.finale__credit {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(8px);
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(.2,.7,.2,1), filter 1.2s ease;
+}
+.finale--in .finale__eyebrow,
+.finale--in .finale__quote,
+.finale--in .finale__line,
+.finale--in .finale__credit { opacity: 1; transform: none; filter: none; }
+.finale--in .finale__quote  { transition-delay: 0.25s; }
+.finale--in .finale__line   { transition-delay: 0.7s; }
+.finale--in .finale__credit { transition-delay: 1s; }
+
+.finale__eyebrow {
+  margin: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: #ff7a5c;
+}
+
+.finale__quote {
+  margin: 0;
+  font-weight: 300;
+  font-size: clamp(1.8rem, 4.2vw, 3.4rem);
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+  background: linear-gradient(110deg, #fff 30%, #ffb199 50%, #fff 70%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 7s linear infinite;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.12);
+}
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+
+.finale__line {
+  width: 90px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d9391e, transparent);
+}
+
+.finale__credit {
+  margin: 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+}
+.finale__credit strong { color: #fff; font-weight: 600; }
+.finale__credit i { margin: 0 0.6em; font-style: normal; color: #d9391e; }
+
+@media (prefers-reduced-motion: reduce) {
+  .finale__rings span, .finale__quote { animation: none; }
+  .finale__eyebrow, .finale__quote, .finale__line, .finale__credit { transition: none; opacity: 1; transform: none; filter: none; }
+}
