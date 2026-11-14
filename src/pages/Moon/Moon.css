@@ -155,3 +155,63 @@
 .surface--mars .surface__character img {
   filter: drop-shadow(0 0 14px rgba(255, 140, 80, 0.4));
 }
+
+/* ---------- Deep Space: galaxy backdrop + floating astronaut ---------- */
+.galaxy {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 45% at 20% 25%, rgba(120, 60, 220, 0.45), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 80% 70%, rgba(30, 120, 220, 0.4), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 70% 15%, rgba(220, 70, 160, 0.3), transparent 70%),
+    radial-gradient(ellipse 90% 18% at 50% 50%, rgba(190, 170, 255, 0.14), transparent 70%),
+    #03020c;
+}
+.galaxy__stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, #fff, transparent),
+    radial-gradient(1px 1px at 27% 62%, #fff, transparent),
+    radial-gradient(2px 2px at 43% 33%, #cfe3ff, transparent),
+    radial-gradient(1px 1px at 58% 80%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 71% 44%, #ffe9c9, transparent),
+    radial-gradient(1px 1px at 88% 22%, #fff, transparent),
+    radial-gradient(2px 2px at 93% 88%, #fff, transparent),
+    radial-gradient(1px 1px at 6% 90%, #cfe3ff, transparent);
+  background-size: 420px 420px;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+.galaxy__stars--far {
+  background-size: 260px 260px;
+  background-position: 90px 60px;
+  opacity: 0.6;
+  animation-duration: 6s;
+  animation-delay: -2s;
+}
+@keyframes twinkle { from { opacity: 0.45; } to { opacity: 1; } }
+.surface__astronaut {
+  position: absolute;
+  left: clamp(1rem, 9%, 10rem);
+  bottom: 12vh;
+  height: min(48vh, 34vw);
+  width: auto;
+  animation: floatY 6s ease-in-out infinite alternate;
+}
+@keyframes floatY {
+  from { transform: translateY(-14px) rotate(-4deg); }
+  to   { transform: translateY(14px) rotate(4deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .galaxy__stars, .surface__astronaut { animation: none; }
+}
+
+.surface__astronaut img {
+  display: block;
+  height: 100%;
+  width: auto;
+  filter: drop-shadow(0 0 22px rgba(150, 140, 255, 0.4));
+}

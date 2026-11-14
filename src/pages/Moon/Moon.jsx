@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import moonImg from '../../assets/Moon-round.png'
 import marsImg from '../../assets/Marse-round.png'
 import deepSpaceImg from '../../assets/Deepspace.png'
+import astronautImg from '../../assets/Astronaut.png'
 import characterImg from '../../assets/character.png'
 import moonSurfaceImg from '../../assets/moonSurface.png'
 import marsSurfaceImg from '../../assets/marsSurface.png'
@@ -109,15 +110,34 @@ function Surface({ world }) {
       cancelAnimationFrame(raf)
     }
   }, [])
+  const isSpace = world.key === 'deepspace'
   return (
     <section className={`surface surface--${world.key}`} ref={ref} aria-label={`${world.name} surface`}>
-      <img className="surface__ground" src={world.key === 'mars' ? marsSurfaceImg : moonSurfaceImg} alt="" aria-hidden="true" />
-      <div className="surface__character">
-        <img src={characterImg} alt="Alien explorer" />
-        <span className="surface__mouth" aria-hidden="true" />
-        <span className="surface__shadow" aria-hidden="true" />
-      </div>
+      {isSpace ? (
+        <div className="surface__astronaut">
+          <img src={astronautImg} alt="Astronaut" />
+        </div>
+      ) : (
+        <>
+          <img className="surface__ground" src={world.key === 'mars' ? marsSurfaceImg : moonSurfaceImg} alt="" aria-hidden="true" />
+          <div className="surface__character">
+            <img src={characterImg} alt="Alien explorer" />
+            <span className="surface__mouth" aria-hidden="true" />
+            <span className="surface__shadow" aria-hidden="true" />
+          </div>
+        </>
+      )}
     </section>
+  )
+}
+
+// Fixed galaxy backdrop + floating astronaut for the Deep Space page.
+function DeepSpace() {
+  return (
+    <div className="galaxy" aria-hidden="true">
+      <div className="galaxy__stars" />
+      <div className="galaxy__stars galaxy__stars--far" />
+    </div>
   )
 }
 
@@ -126,6 +146,7 @@ export default function Moon({ world = 'moon' }) {
   const titles = CHAPTERS[world === 'deepspace' ? 'deepSpace' : world]
   return (
     <>
+      {world === 'deepspace' && <DeepSpace />}
       <Surface world={info} />
       {titles.map((title, i) => (
         <Chapter key={`${world}-${i}`} index={i} title={title} world={info} />
