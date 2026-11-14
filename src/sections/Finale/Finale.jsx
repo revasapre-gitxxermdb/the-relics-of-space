@@ -24,7 +24,8 @@ export default function Finale() {
       <div className="finale__content">
         <p className="finale__eyebrow">Still out there</p>
         <h2 className="finale__quote">
-          Every relic on this site is still up there right now, exactly where its mission ended.
+          <span className="finale__quote-line">Every relic on this site is still up there right now,</span>{' '}
+          <span className="finale__quote-line">exactly where its mission ended.</span>
         </h2>
         <span className="finale__line" aria-hidden="true" />
         <p className="finale__credit">
