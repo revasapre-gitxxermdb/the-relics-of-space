@@ -1,184 +1,126 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-}
-
 .hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
-}
-
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
-}
-
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
-}
-
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
-}
-
-.ticks {
+  --rx: 0deg;
+  --ry: 0deg;
   position: relative;
   width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: #02060d;
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
-  }
+/* Pointer-driven tilt */
+.hero__scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  pointer-events: none;
+}
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+/* Continuous slow idle camera drift so depth is visible without the mouse */
+.hero__sway {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: sway 18s ease-in-out infinite alternate;
+}
+
+/* Pushed far back in Z; oversized so edges never show while tilting */
+.hero__bg {
+  position: absolute;
+  inset: -50%; /* 2x size × (900/1400 perspective shrink) ≈ 1.29x of the hero */
+  background: url('./assets/space-bg.png') center / cover no-repeat;
+  transform: translateZ(-500px);
+}
+
+/* Stars twinkle automatically and smoothly */
+.star {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  animation-name: twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: opacity, scale;
+}
+
+/* Smooth, gentle fade in / out */
+@keyframes twinkle {
+  0%, 100% { opacity: var(--lo); scale: 0.8; }
+  50%      { opacity: var(--hi); scale: 1; }
+}
+
+/* Meteor: streaks across for ~8% of its cycle, then waits */
+.shooting-star {
+  position: absolute;
+  z-index: 0;
+  width: 140px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(to left, #fff, rgba(160, 220, 255, 0.4) 40%, transparent);
+  border-radius: 2px;
+  filter: drop-shadow(0 0 4px #bfe9ff);
+  rotate: 35deg;
+  animation: shoot 10s linear infinite;
+}
+
+@keyframes shoot {
+  0%   { opacity: 0; translate: 0 0; }
+  1%   { opacity: 1; }
+  7%   { opacity: 0; translate: 380px 266px; }
+  100% { opacity: 0; translate: 380px 266px; }
+}
+
+/* Nebula slowly "breathes" */
+.hero__bg { animation: breathe 9s ease-in-out infinite alternate; }
+@keyframes breathe {
+  from { filter: brightness(0.9) saturate(1); }
+  to   { filter: brightness(1.12) saturate(1.15); }
+}
+
+@keyframes sway {
+  from {
+    transform: rotateY(-2.5deg) rotateX(1.5deg) translateZ(0);
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+  to {
+    transform: rotateY(2.5deg) rotateX(-1.5deg) translateZ(40px);
+  }
+}
+
+/* Darken the bluish right side toward black (stars stay visible above it) */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0) 35%,
+    rgba(0, 0, 0, 0.45) 65%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__sway {
+    animation: none;
+  }
+  .star {
+    animation: none;
+    opacity: 0.6;
+  }
+  .shooting-star,
+  .hero__bg {
+    animation: none;
   }
 }
