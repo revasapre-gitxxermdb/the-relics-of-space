@@ -1,0 +1,52 @@
+/* Ball: one element. Rise-in animates scale/opacity, bob animates translate, JS drives transform (tilt) + background-position (spin) */
+.world__ball:hover { scale: 1.1; }
+.world__ball.is-dragging { cursor: grabbing; }
+
+.world__ball {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  background-size: var(--fit, 100%);
+  background-position: center;
+  rotate: var(--spin, 0deg);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  will-change: transform;
+  transition: scale 0.4s ease;
+  box-shadow: 0 0 60px rgba(120, 180, 255, 0.25), 0 45px 40px -25px rgba(0, 0, 0, 0.7);
+  animation: rise 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--d) * -0.3 + 0.2s);
+}
+/* Non-planet image: no circle, no sphere shading */
+.world__ball--flat {
+  border-radius: 0;
+  overflow: visible;
+  background-size: contain;
+  box-shadow: none;
+}
+.world__ball--flat::after { display: none; }
+/* Sphere shading: light from top-left, dark limb, soft rim glow */
+.world__ball::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  rotate: calc(var(--spin, 0deg) * -1); /* keep lighting fixed while the surface spins */
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, 0.55) 80%, rgba(0, 0, 0, 0.9) 100%),
+    radial-gradient(circle at 72% 78%, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 55%);
+  box-shadow: inset 0 0 25px rgba(150, 200, 255, 0.35);
+}
+
+@keyframes rise {
+  from { opacity: 0; translate: 0 50px; }
+  to   { opacity: 1; translate: 0 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world__ball { animation: none; transform: none; }
+}

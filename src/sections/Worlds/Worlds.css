@@ -1,0 +1,90 @@
+/* ---------- Worlds section (same background as hero) ---------- */
+.worlds {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+  padding: 4rem 1.5rem;
+  box-sizing: border-box;
+}
+.worlds::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.12) 35%, rgba(0, 0, 0, 0.45) 65%, rgba(0, 0, 0, 0.8) 100%);
+}
+
+.worlds__row {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 4vw, 4rem);
+  width: 100%;
+  max-width: 1200px;
+  perspective: 1200px;
+}
+
+.world {
+  margin: 0;
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+.world--main { z-index: 2; }
+
+/* Angle the side images inward so the row reads as 3D */
+.world:first-child { transform: rotateY(22deg); }
+.world:last-child  { transform: rotateY(-22deg); }
+.world--main       { transform: translateZ(80px); }
+
+.world__name {
+  display: inline-block;
+  margin-top: 2.5rem;
+  padding: 0.55rem 1.3rem;
+  border-radius: 999px;
+  background: #d9391e;
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition: transform 0.2s, background 0.2s;
+}
+.world__name:hover { background: #a82812; transform: scale(1.05); }
+
+/* Cancel the figure's inward tilt so the button always faces the viewer */
+.world:first-child figcaption { transform: rotateY(-22deg); }
+.world:last-child  figcaption { transform: rotateY(22deg); }
+
+/* Click: button shrinks (press-in) */
+.world__name:active,
+.navbar__btn:active,
+.hero__github:active,
+.hero__cta:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
+}
+
+@media (max-width: 700px) {
+  .worlds__row { flex-direction: column; }
+  .world, .world--main, .world:first-child, .world:last-child { flex: none; width: 80%; transform: none; }
+  .world:first-child figcaption, .world:last-child figcaption { transform: none; }
+}
+
+.world__name:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .world { transition: none; }
+}

@@ -1,0 +1,23 @@
+.timeline {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 7rem 1.5rem 4rem;
+  color: #fff;
+  text-align: center;
+}
+.timeline::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 35%, rgba(0, 0, 0, 0.45) 65%, rgba(0, 0, 0, 0.8) 100%);
+}
+.timeline__title {
+  margin: 0;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.04em;
+  filter: drop-shadow(0 0 18px rgba(150, 200, 255, 0.45));
+}

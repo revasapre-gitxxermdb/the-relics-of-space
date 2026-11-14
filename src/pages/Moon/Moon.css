@@ -1,0 +1,143 @@
+.moon {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 7rem 1.5rem 4rem;
+  color: #fff;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.moon__img {
+  width: min(40vw, 310px);
+  border-radius: 50%;
+  filter: drop-shadow(0 0 40px rgba(150, 200, 255, 0.3));
+  animation: moonIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.moon__chapter {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.4rem);
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #9fd8ff;
+  animation: wordIn 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+.moon__title {
+  font-size: clamp(2rem, 5.5vw, 4.5rem);
+}
+.moon__back {
+  color: #cfe3ff;
+  text-decoration: none;
+  opacity: 0.8;
+  animation: wordIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) 2.2s both;
+}
+.moon__back:hover { opacity: 1; }
+@keyframes moonIn {
+  from { opacity: 0; transform: scale(0.7) translateY(30px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ---------- Moon surface section ---------- */
+.surface {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  color: #fff;
+}
+.surface__ground {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+}
+.surface__character {
+  position: absolute;
+  left: clamp(1rem, 9%, 10rem);
+  bottom: 11vw; /* feet planted in the foreground of the terrain */
+  height: min(52vh, 32vw);
+  z-index: 2;
+  pointer-events: none;
+}
+.surface__character img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  width: auto;
+  filter: drop-shadow(0 0 14px rgba(190, 120, 255, 0.35));
+}
+/* Talking mouth, laid over the painted smile */
+.surface__mouth {
+  position: absolute;
+  z-index: 2;
+  left: 50.4%;
+  top: 40.6%;
+  width: 8%;
+  height: 2.6%;
+  transform: translate(-50%, -50%) scaleY(0.12);
+  transform-origin: 50% 40%;
+  border-radius: 50% 50% 55% 55% / 35% 35% 65% 65%;
+  background: radial-gradient(ellipse at 50% 85%, #d0508f 0 28%, #3a0a35 62%);
+  box-shadow: 0 0 0 1.5px #7a2fb8;
+  animation: talk 1.3s linear infinite;
+}
+@keyframes talk {
+  0%   { transform: translate(-50%, -50%) scaleY(0.12) scaleX(0.9); }
+  10%  { transform: translate(-50%, -50%) scaleY(1)    scaleX(1); }
+  22%  { transform: translate(-50%, -50%) scaleY(0.3)  scaleX(0.85); }
+  34%  { transform: translate(-50%, -50%) scaleY(0.8)  scaleX(0.7); }
+  46%  { transform: translate(-50%, -50%) scaleY(0.15) scaleX(0.95); }
+  58%  { transform: translate(-50%, -50%) scaleY(1.1)  scaleX(1); }
+  70%  { transform: translate(-50%, -50%) scaleY(0.4)  scaleX(0.8); }
+  82%  { transform: translate(-50%, -50%) scaleY(0.9)  scaleX(0.75); }
+  100% { transform: translate(-50%, -50%) scaleY(0.12) scaleX(0.9); }
+}
+@media (prefers-reduced-motion: reduce) { .surface__mouth { animation: none; } }
+
+/* Contact shadow so the feet sit on the ground */
+.surface__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -1.2%;
+  width: 70%;
+  height: 7%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0) 70%);
+  filter: blur(3px);
+}
+.surface__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0 1.5rem 5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.8);
+}
+.surface__title {
+  margin: 0;
+  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+}
+.surface__text {
+  margin: 0;
+  max-width: 640px;
+  line-height: 1.6;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+}
+
+/* Chapters: pause entrance animations until scrolled into view */
+.chapter:not(.is-visible) * { animation-play-state: paused !important; }

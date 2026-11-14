@@ -1,0 +1,25 @@
+/* Meteor: streaks across for ~8% of its cycle, then waits */
+.shooting-star {
+  position: absolute;
+  z-index: 0;
+  width: 140px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+  background: linear-gradient(to left, #fff, rgba(160, 220, 255, 0.4) 40%, transparent);
+  border-radius: 2px;
+  filter: drop-shadow(0 0 4px #bfe9ff);
+  rotate: 35deg;
+  animation: shoot 10s linear infinite;
+}
+
+@keyframes shoot {
+  0%   { opacity: 0; translate: 0 0; }
+  1%   { opacity: 1; }
+  7%   { opacity: 0; translate: 380px 266px; }
+  100% { opacity: 0; translate: 380px 266px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shooting-star { animation: none; }
+}

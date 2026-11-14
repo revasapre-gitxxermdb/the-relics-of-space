@@ -1,0 +1,33 @@
+/* ---------- Navbar ---------- */
+.navbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.25rem 1.75rem;
+}
+.navbar__btn {
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  color: #fff;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  transition: transform 0.2s, background 0.2s;
+}
+.navbar__btn:hover { background: rgba(255, 255, 255, 0.12); transform: scale(1.05); }
+.navbar__btn[aria-current='page']:not(.navbar__btn--timeline) { background: rgba(255, 255, 255, 0.18); }
+.navbar__btn--timeline {
+  background: #d9391e;
+  border-color: #d9391e;
+  font-weight: 600;
+}
+.navbar__btn--timeline:hover { background: #a82812; }
+
+.navbar__btn:active {
+  transform: scale(0.92);
+  transition-duration: 0.08s;
+}
