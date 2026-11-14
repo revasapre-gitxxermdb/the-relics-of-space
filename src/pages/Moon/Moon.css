@@ -193,6 +193,26 @@
   animation-delay: -2s;
 }
 @keyframes twinkle { from { opacity: 0.45; } to { opacity: 1; } }
+
+/* Extra-sparkly stars (Timeline page) */
+.galaxy--sparkle .galaxy__stars {
+  filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.9)) brightness(1.4);
+  animation-name: chamcham;
+  animation-duration: 1.8s;
+}
+.galaxy--sparkle .galaxy__stars--far { animation-duration: 2.6s; opacity: 0.85; }
+.galaxy--sparkle .galaxy__stars--glint {
+  background-size: 340px 340px;
+  background-position: 160px 120px;
+  opacity: 1;
+  animation-duration: 1.3s;
+  animation-delay: -0.7s;
+}
+@keyframes chamcham {
+  0%   { opacity: 0.15; transform: scale(0.97); }
+  50%  { opacity: 1; }
+  100% { opacity: 0.35; transform: scale(1.03); }
+}
 .surface__astronaut {
   position: absolute;
   left: clamp(1rem, 9%, 10rem);
@@ -206,7 +226,7 @@
   to   { transform: translateY(14px) rotate(4deg); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .galaxy__stars, .surface__astronaut { animation: none; }
+  .galaxy__stars, .galaxy--sparkle .galaxy__stars, .surface__astronaut { animation: none; }
 }
 
 .surface__astronaut img {

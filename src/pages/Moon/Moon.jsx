@@ -132,11 +132,12 @@ function Surface({ world }) {
 }
 
 // Fixed galaxy backdrop + floating astronaut for the Deep Space page.
-function DeepSpace() {
+export function DeepSpace({ sparkle = false }) {
   return (
-    <div className="galaxy" aria-hidden="true">
+    <div className={`galaxy${sparkle ? ' galaxy--sparkle' : ''}`} aria-hidden="true">
       <div className="galaxy__stars" />
       <div className="galaxy__stars galaxy__stars--far" />
+      {sparkle && <div className="galaxy__stars galaxy__stars--glint" />}
     </div>
   )
 }

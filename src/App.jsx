@@ -10,7 +10,7 @@ const WORLD_ROUTES = ['moon', 'mars', 'deepspace']
 export default function App() {
   const route = useHashRoute()
   return (
-    <div className={`page${WORLD_ROUTES.includes(route) ? ' page--black' : ''}`}>
+    <div className={`page${WORLD_ROUTES.includes(route) || route === 'timeline' ? ' page--black' : ''}`}>
       <div className="page__bg" aria-hidden="true" />
       <Navbar route={route} />
       <div className="page__view" key={route}>
