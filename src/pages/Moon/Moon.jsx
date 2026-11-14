@@ -6,6 +6,8 @@ import astronautImg from '../../assets/Astronaut.png'
 import characterImg from '../../assets/character.png'
 import moonSurfaceImg from '../../assets/moonSurface.png'
 import marsSurfaceImg from '../../assets/marsSurface.png'
+import '@google/model-viewer'
+import c1Model from '../../assets/moon/c1.glb'
 import { CHAPTERS } from '../../data/chapters'
 import '../../sections/Hero/Hero.css'
 import './Moon.css'
@@ -74,7 +76,25 @@ function Chapter({ index, title, world }) {
         <span className="hero__rule" aria-hidden="true" />
         {index === 0 && <a className="moon__back" href="#/">← Back</a>}
       </section>
-      <section className="surface-spacer" ref={surfaceRef} aria-hidden="true" />
+      <section className="surface-spacer" ref={surfaceRef} aria-hidden={!(index === 0 && world.key === 'moon')}>
+        {index === 0 && world.key === 'moon' && (
+          <model-viewer
+            class="moon__model"
+            src={c1Model}
+            alt="Moon 3D model"
+            autoplay
+            camera-controls
+            touch-action="pan-y"
+            interaction-prompt="none"
+            camera-orbit="55deg 78deg auto"
+            disable-zoom
+            disable-pan
+            min-polar-angle="0deg"
+            max-polar-angle="180deg"
+            shadow-intensity="1"
+          />
+        )}
+      </section>
     </div>
   )
 }

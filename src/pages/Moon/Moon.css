@@ -44,8 +44,22 @@
 /* ---------- Moon surface section ---------- */
 /* Scroll spacer: one screen of scrolling while the surface layer stays put */
 .surface-spacer {
+  position: relative;
+  overflow: hidden;
   height: 100vh;
   height: 100svh;
+}
+.moon__model {
+  position: absolute;
+  right: 3%;
+  bottom: 11vh; /* wheels rest on the moon terrain */
+  width: min(60vw, 1100px);
+  height: min(75vh, 700px);
+  z-index: 6;
+  --poster-color: transparent;
+  background: transparent;
+  pointer-events: auto;
+  cursor: grab;
 }
 /* Fixed layer: ground + alien stay at the bottom of the viewport; opacity is scroll-driven */
 .surface {
