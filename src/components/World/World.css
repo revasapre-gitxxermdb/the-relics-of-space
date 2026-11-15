@@ -284,6 +284,8 @@
   filter: drop-shadow(0 0 22px rgba(150, 140, 255, 0.4));
 }
 
+.moon__model--c1 { border: 0; color-scheme: normal; }
+.moon__model--c1,
 .moon__model--c2,
 .moon__model--c3,
 .moon__model--c4 {
@@ -292,6 +294,7 @@
   right: auto;
   translate: -50% 0;
 }
+.moon__model--c1,
 .moon__model--c2,
 .moon__model--c3,
 .moon__model--c4 { left: 64%; translate: -50% -6vh; }

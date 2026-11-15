@@ -6,7 +6,6 @@ import c4Audio from '../../assets/moonChapters/MC4.mp3'
 import moonImg from '../../assets/Moon-round.png'
 import moonSurfaceImg from '../../assets/moonSurface.png'
 import '@google/model-viewer'
-import c1Model from '../../assets/moon/c1.glb'
 import c2Model from '../../assets/moon/c2.glb'
 import c3Model from '../../assets/moon/c3.glb'
 import c4Model from '../../assets/moon/c4.glb'
@@ -207,46 +206,6 @@ export default function Moon() {
     }
   }, [])
 
-  // Wheels turn while the rover drives in (same duration as the CSS slide-in) and stop the moment it arrives.
-  useEffect(() => {
-    const mv = document.querySelector('.moon__model')
-    if (!mv) return
-    const DRIVE_MS = 30000 // keep in sync with .moon__model transition in World.css
-    let state = 'away' // away | driving | parked
-    let timer = 0
-    let drive = null
-    const spin = (on) => {
-      if (on) mv.play({ repetitions: Infinity }); else mv.pause()
-    }
-    const check = () => {
-      const x = getComputedStyle(document.documentElement).getPropertyValue('--model-x').trim()
-      if (x === '0px' && state === 'away') {
-        state = 'driving'
-        spin(true)
-        drive = mv.animate(
-          [{ transform: 'translateX(110vw)' }, { transform: 'translateX(0)' }],
-          { duration: DRIVE_MS, easing: 'linear', fill: 'forwards' }
-        )
-        timer = setTimeout(() => { state = 'parked'; spin(false) }, DRIVE_MS)
-      } else if (x === '110vw' && state !== 'away') {
-        clearTimeout(timer)
-        state = 'away'
-        spin(false)
-        drive?.cancel(); drive = null
-      }
-    }
-    const onLoad = () => { spin(state === 'driving'); check() }
-    window.addEventListener('scroll', check, { passive: true })
-    mv.addEventListener('load', onLoad)
-    check()
-    return () => {
-      clearTimeout(timer)
-      drive?.cancel()
-      window.removeEventListener('scroll', check)
-      mv.removeEventListener('load', onLoad)
-    }
-  }, [])
-
   return (
     <>
       <Surface world={WORLD} groundImg={moonSurfaceImg} />
@@ -256,19 +215,12 @@ export default function Moon() {
       {CHAPTERS.moon.map((title, i) => (
         <Chapter key={i} index={i} title={title} world={WORLD}>
           {i === 0 && (
-            <model-viewer
-              class="moon__model"
-              src={c1Model}
-              alt="Moon 3D model"
-              camera-controls
-              touch-action="pan-y"
-              interaction-prompt="none"
-              camera-orbit="55deg 78deg auto"
-              disable-zoom
-              disable-pan
-              min-polar-angle="0deg"
-              max-polar-angle="180deg"
-              shadow-intensity="1"
+            <iframe
+              className="moon__model moon__model--c1"
+              src="/moonCM.html"
+              title="LRO 3D model"
+              allowTransparency="true"
+              loading="eager"
             />
           )}
           {i >= 1 && i <= 3 && (
