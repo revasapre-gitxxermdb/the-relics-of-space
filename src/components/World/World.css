@@ -49,6 +49,36 @@
   height: 100vh;
   height: 100svh;
 }
+/* Narration captions: top-centre, white text on the alien's purple */
+.caption {
+  position: fixed;
+  top: clamp(1rem, 4vh, 2.5rem);
+  left: 50%;
+  z-index: 20;
+  max-width: min(90vw, 760px);
+  transform: translateX(-50%) translateY(-8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.caption--on {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.caption__text {
+  display: inline-block;
+  padding: 0.6em 1.2em;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b3fd1, #a24be0);
+  color: #fff;
+  font-size: clamp(0.95rem, 1.6vw, 1.25rem);
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(160, 80, 230, 0.45);
+}
+.caption__text:empty { display: none; }
+
 .moon__model {
   /* Fixed in place (like the character) and faded with the same scroll-driven
      opacity, so it fades in with the light/dark change instead of sliding up. */
