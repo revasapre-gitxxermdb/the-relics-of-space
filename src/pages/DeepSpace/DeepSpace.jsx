@@ -101,7 +101,7 @@ export default function DeepSpace() {
           {i === 1 && (
             <model-viewer
               class="moon__model moon__model--c2"
-              style={{ translate: '-50% 9vh' }}
+              style={{ bottom: 'calc(11vh - 9vh)' }}
               src={c2Model}
               alt="Voyager 1 3D model"
               camera-controls
@@ -116,7 +116,7 @@ export default function DeepSpace() {
           {i === 2 && (
             <iframe
               className="moon__model moon__model--c3"
-              style={{ border: 0, colorScheme: 'normal', width: 'min(54vw, 990px)', height: 'min(66vh, 630px)', transform: 'none', translate: '-50% 6vh' }}
+              style={{ border: 0, colorScheme: 'normal', width: 'min(54vw, 990px)', height: 'min(66vh, 630px)', transform: 'none', left: 'calc(64% - min(54vw, 990px) / 2)', bottom: 'calc(11vh - 6vh)' }}
               src="/deepSpaceC3.html"
               title="Kepler Space Telescope 3D model"
               allowTransparency="true"
@@ -126,7 +126,7 @@ export default function DeepSpace() {
           {i === 3 && (
             <iframe
               className="moon__model moon__model--c4"
-              style={{ border: 0, colorScheme: 'normal', width: 'min(54vw, 990px)', height: 'min(66vh, 630px)', transform: 'none', translate: '-50% 6vh' }}
+              style={{ border: 0, colorScheme: 'normal', width: 'min(54vw, 990px)', height: 'min(66vh, 630px)', transform: 'none', left: 'calc(64% - min(54vw, 990px) / 2)', bottom: 'calc(11vh - 6vh)' }}
               src="/deepSpaceC4.html"
               title="Dawn spacecraft 3D model"
               allowTransparency="true"
