@@ -1,6 +1,10 @@
 // Slow, eased scrolling so changing slides feels like a presentation.
 export const SLIDE_MS = 2200
 
+// A page can set slideGate.handle = (dir) => boolean. If it returns true the scroll step was
+// consumed (e.g. it advanced a caption) and the slide does not change.
+export const slideGate = { handle: null }
+
 let rafId = 0
 export let isSliding = false
 
@@ -32,6 +36,7 @@ export function enableSlides(selector) {
 
   const go = (dir) => {
     if (isSliding) return
+    if (slideGate.handle?.(dir)) return
     const t = tops()
     if (!t.length) return
     const y = window.scrollY

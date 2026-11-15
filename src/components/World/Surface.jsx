@@ -32,6 +32,13 @@ export default function Surface({ world, groundImg }) {
       const first = Math.max(0, 1 - Math.abs(spacers[0].getBoundingClientRect().top) / (vh * 0.45))
       document.documentElement.style.setProperty('--model-o', String(first))
       document.documentElement.style.setProperty('--model-pe', first > 0.5 ? 'auto' : 'none')
+      // Chapter 2 and 3 models: visible only on their own surface screen
+      ;[1, 2, 3].forEach((n) => {
+        if (!spacers[n]) return
+        const k = Math.max(0, 1 - Math.abs(spacers[n].getBoundingClientRect().top) / (vh * 0.45))
+        document.documentElement.style.setProperty(`--model${n + 1}-o`, String(k))
+        document.documentElement.style.setProperty(`--model${n + 1}-pe`, k > 0.5 ? 'auto' : 'none')
+      })
       // Rover drives in from the right once its slide is reached; parks off-screen again when leaving
       document.documentElement.style.setProperty('--model-x', first > 0.5 ? '0px' : '110vw')
     }

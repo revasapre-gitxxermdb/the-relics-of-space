@@ -3,7 +3,7 @@ export const CHAPTERS = {
     'The Moon’s Shadow Hunter (LRO)',
     'The Pocket-Sized Orbit Hopper (CAPSTONE)',
     'The Golden Eagle\'s Nest (Apollo 11)',
-    'The Dust-Rover’s Joyride (Apollo 15 LRV)',
+    'The Dust-Rover’s Joyride (Surveyor 3)',
   ],
   mars: [
     'Percy’s Red Planet Laser (Perseverance)',
