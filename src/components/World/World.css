@@ -322,24 +322,24 @@
 
 .moon__model--c1,
 .moon__model--c4 { border: 0; color-scheme: normal; }
+/* Centred at 64% of the viewport WITHOUT the `translate` property: the production CSS minifier rewrites
+   `translate` into `transform` and stacks the -50% shifts, pushing the models left once deployed.
+   So the centring is done with plain left/bottom maths and `transform` stays free for JS animations. */
 .moon__model--c1,
 .moon__model--c2,
 .moon__model--c3,
 .moon__model--c4 {
   transform: none;
-  left: 50%;
   right: auto;
-  translate: -50% 0;
+  left: calc(64% - min(60vw, 1100px) / 2);
+  bottom: calc(11vh + 6vh);
 }
-.moon__model--c1,
-.moon__model--c2,
-.moon__model--c3,
-.moon__model--c4 { left: 64%; translate: -50% -6vh; }
 .moon__model--c2 { opacity: var(--model2-o, 0); pointer-events: var(--model2-pe, none); }
 .moon__model--c3 { opacity: var(--model3-o, 0); pointer-events: var(--model3-pe, none); }
-.moon__model--c4 { width: min(72vw, 1320px); height: min(88vh, 840px); transform: translateX(110vw); translate: -50% 11vh; opacity: var(--model4-o, 0); pointer-events: var(--model4-pe, none); }
+/* iframe c4 (Mars/Deep Space): bigger, sits 11vh lower, parked off-screen right until JS drives it in */
+.moon__model--c4 { width: min(72vw, 1320px); height: min(88vh, 840px); left: calc(64% - min(72vw, 1320px) / 2); bottom: 0; transform: translateX(110vw); opacity: var(--model4-o, 0); pointer-events: var(--model4-pe, none); }
 /* Moon chapter 4 is a plain <model-viewer> (Mars's is an iframe driven in by JS), so keep it in place. */
-model-viewer.moon__model--c4 { transform: none; width: min(60vw, 1100px); height: min(75vh, 700px); translate: -50% -6vh; }
+model-viewer.moon__model--c4 { transform: none; width: min(60vw, 1100px); height: min(75vh, 700px); left: calc(64% - min(60vw, 1100px) / 2); bottom: calc(11vh + 6vh); }
 
 /* Back / Next buttons: bottom of the last chapter of each world, fade in with that chapter's surface screen */
 .world-nav {
