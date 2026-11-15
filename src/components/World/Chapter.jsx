@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { slideTo } from '../../utils/slideScroll'
 import '../../sections/Hero/Hero.css'
 import './World.css'
 
@@ -33,7 +34,7 @@ export default function Chapter({ index, title, world, children }) {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const cancel = () => clearTimeout(timer)
     const timer = setTimeout(() => {
-      surfaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      if (surfaceRef.current) slideTo(surfaceRef.current.getBoundingClientRect().top + window.scrollY)
     }, 4200)
     const events = ['wheel', 'touchstart', 'keydown', 'pointerdown']
     events.forEach((e) => window.addEventListener(e, cancel, { passive: true }))

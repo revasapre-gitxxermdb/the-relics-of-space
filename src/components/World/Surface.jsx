@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import astronautImg from '../../assets/Astronaut.png'
 import characterImg from '../../assets/character.png'
+import { enableSlides } from '../../utils/slideScroll'
 import './World.css'
 
 // Fixed ground + alien (or floating astronaut). Fully visible on each surface
@@ -22,7 +23,17 @@ export default function Surface({ world, groundImg }) {
       // Before the first surface screen: fade in from nothing. After: never below the faint level.
       const reached = spacers[0].getBoundingClientRect().top <= 0
       const FAINT = 0.3
-      ref.current.style.opacity = String(reached ? FAINT + (1 - FAINT) * best : best)
+      const o = String(reached ? FAINT + (1 - FAINT) * best : best)
+      ref.current.style.opacity = o
+      // Page content (e.g. the 3D model) shares the same fade so it appears with the light/dark transition
+      document.documentElement.style.setProperty('--surface-o', o)
+      // Model belongs to chapter 1 only: fades in with the surface, fades fully out as chapter 2 arrives
+      // Steeper than the surface fade: hidden on the title slide, visible only on the chapter 1 surface screen
+      const first = Math.max(0, 1 - Math.abs(spacers[0].getBoundingClientRect().top) / (vh * 0.45))
+      document.documentElement.style.setProperty('--model-o', String(first))
+      document.documentElement.style.setProperty('--model-pe', first > 0.5 ? 'auto' : 'none')
+      // Rover drives in from the right once its slide is reached; parks off-screen again when leaving
+      document.documentElement.style.setProperty('--model-x', first > 0.5 ? '0px' : '110vw')
     }
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
     update()
@@ -34,7 +45,8 @@ export default function Surface({ world, groundImg }) {
       cancelAnimationFrame(raf)
     }
   }, [])
-  const isSpace = world.key === 'deepspace'
+  useEffect(() => enableSlides('.moon, .surface-spacer'), [])
+  const isSpace =world.key === 'deepspace'
   return (
     <section className={`surface surface--${world.key}`} ref={ref} aria-label={`${world.name} surface`}>
       {isSpace ? (

@@ -50,7 +50,10 @@
   height: 100svh;
 }
 .moon__model {
-  position: absolute;
+  /* Fixed in place (like the character) and faded with the same scroll-driven
+     opacity, so it fades in with the light/dark change instead of sliding up. */
+  position: fixed;
+  opacity: var(--model-o, 0);
   right: 3%;
   bottom: 11vh; /* wheels rest on the moon terrain */
   width: min(60vw, 1100px);
@@ -58,7 +61,8 @@
   z-index: 6;
   --poster-color: transparent;
   background: transparent;
-  pointer-events: auto;
+  transform: translateX(110vw); /* parked off-screen right; Moon.jsx animates it in */
+  pointer-events: var(--model-pe, none);
   cursor: grab;
 }
 /* Fixed layer: ground + alien stay at the bottom of the viewport; opacity is scroll-driven */
