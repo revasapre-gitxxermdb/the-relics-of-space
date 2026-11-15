@@ -1,176 +1,37 @@
-import { useEffect, useRef } from 'react'
 import moonImg from '../../assets/Moon-round.png'
-import marsImg from '../../assets/Marse-round.png'
-import deepSpaceImg from '../../assets/Deepspace.png'
-import astronautImg from '../../assets/Astronaut.png'
-import characterImg from '../../assets/character.png'
 import moonSurfaceImg from '../../assets/moonSurface.png'
-import marsSurfaceImg from '../../assets/marsSurface.png'
 import '@google/model-viewer'
 import c1Model from '../../assets/moon/c1.glb'
 import { CHAPTERS } from '../../data/chapters'
-import '../../sections/Hero/Hero.css'
-import './Moon.css'
+import Chapter from '../../components/World/Chapter'
+import Surface from '../../components/World/Surface'
 
-const WORLD_INFO = {
-  moon: { key: 'moon', name: 'Moon', img: moonImg },
-  mars: { key: 'mars', name: 'Mars', img: marsImg },
-  deepspace: { key: 'deepspace', name: 'Deep Space', img: deepSpaceImg },
-}
+const WORLD = { key: 'moon', name: 'Moon', img: moonImg }
 
-function Chapter({ index, title, world }) {
-  let titleIndex = 0
-  const rootRef = useRef(null)
-  const surfaceRef = useRef(null)
-
-  // Hold the entrance animations until the chapter scrolls into view.
-  useEffect(() => {
-    const el = rootRef.current
-    if (index === 0 || !('IntersectionObserver' in window)) {
-      el.classList.add('is-visible')
-      return
-    }
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        el.classList.add('is-visible')
-        io.disconnect()
-      }
-    }, { threshold: 0.4 })
-    io.observe(el.firstElementChild)
-    return () => io.disconnect()
-  }, [index])
-
-  // First chapter only: glide down once the title has animated in.
-  // Cancelled if the visitor scrolls or interacts first.
-  useEffect(() => {
-    if (index !== 0) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const cancel = () => clearTimeout(timer)
-    const timer = setTimeout(() => {
-      surfaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }, 4200)
-    const events = ['wheel', 'touchstart', 'keydown', 'pointerdown']
-    events.forEach((e) => window.addEventListener(e, cancel, { passive: true }))
-    return () => {
-      clearTimeout(timer)
-      events.forEach((e) => window.removeEventListener(e, cancel))
-    }
-  }, [index])
-
-  return (
-    <div className={`chapter chapter--${world.key}`} ref={rootRef}>
-      <section className="moon">
-        {index === 0 && <img className="moon__img" src={world.img} alt={world.name} />}
-        <p className="moon__chapter">Chapter {index + 1}</p>
-        <h1 className="hero__title moon__title" aria-label={title}>
-          {title.split(' ').map((word, wi) => (
-            <span className="hero__word" key={wi} aria-hidden="true">
-              {[...word].map((ch, ci) => (
-                <span className="hero__char" key={ci} style={{ '--i': titleIndex++ }}>
-                  {ch}
-                </span>
-              ))}
-            </span>
-          ))}
-        </h1>
-        <span className="hero__rule" aria-hidden="true" />
-        {index === 0 && <a className="moon__back" href="#/">← Back</a>}
-      </section>
-      <section className="surface-spacer" ref={surfaceRef} aria-hidden={!(index === 0 && world.key === 'moon')}>
-        {index === 0 && world.key === 'moon' && (
-          <model-viewer
-            class="moon__model"
-            src={c1Model}
-            alt="Moon 3D model"
-            autoplay
-            camera-controls
-            touch-action="pan-y"
-            interaction-prompt="none"
-            camera-orbit="55deg 78deg auto"
-            disable-zoom
-            disable-pan
-            min-polar-angle="0deg"
-            max-polar-angle="180deg"
-            shadow-intensity="1"
-          />
-        )}
-      </section>
-    </div>
-  )
-}
-
-// Fixed ground + alien. Fully visible on each surface screen, slightly faint
-// while a chapter's text scrolls up from behind it.
-function Surface({ world }) {
-  const ref = useRef(null)
-  useEffect(() => {
-    let raf = 0
-    const update = () => {
-      raf = 0
-      const spacers = document.querySelectorAll('.surface-spacer')
-      if (!spacers.length || !ref.current) return
-      const vh = window.innerHeight
-      let best = 0
-      spacers.forEach((sp) => {
-        const p = 1 - Math.min(Math.abs(sp.getBoundingClientRect().top) / vh, 1)
-        best = Math.max(best, p)
-      })
-      // Before the first surface screen: fade in from nothing. After: never below the faint level.
-      const reached = spacers[0].getBoundingClientRect().top <= 0
-      const FAINT = 0.3
-      ref.current.style.opacity = String(reached ? FAINT + (1 - FAINT) * best : best)
-    }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
-    update()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-      cancelAnimationFrame(raf)
-    }
-  }, [])
-  const isSpace = world.key === 'deepspace'
-  return (
-    <section className={`surface surface--${world.key}`} ref={ref} aria-label={`${world.name} surface`}>
-      {isSpace ? (
-        <div className="surface__astronaut">
-          <img src={astronautImg} alt="Astronaut" />
-        </div>
-      ) : (
-        <>
-          <img className="surface__ground" src={world.key === 'mars' ? marsSurfaceImg : moonSurfaceImg} alt="" aria-hidden="true" />
-          <div className="surface__character">
-            <img src={characterImg} alt="Alien explorer" />
-            <span className="surface__mouth" aria-hidden="true" />
-            <span className="surface__shadow" aria-hidden="true" />
-          </div>
-        </>
-      )}
-    </section>
-  )
-}
-
-// Fixed galaxy backdrop + floating astronaut for the Deep Space page.
-export function DeepSpace({ sparkle = false }) {
-  return (
-    <div className={`galaxy${sparkle ? ' galaxy--sparkle' : ''}`} aria-hidden="true">
-      <div className="galaxy__stars" />
-      <div className="galaxy__stars galaxy__stars--far" />
-      {sparkle && <div className="galaxy__stars galaxy__stars--glint" />}
-    </div>
-  )
-}
-
-export default function Moon({ world = 'moon' }) {
-  const info = WORLD_INFO[world]
-  const titles = CHAPTERS[world === 'deepspace' ? 'deepSpace' : world]
+export default function Moon() {
   return (
     <>
-      {world === 'deepspace' && <DeepSpace />}
-      <Surface world={info} />
-      {titles.map((title, i) => (
-        <Chapter key={`${world}-${i}`} index={i} title={title} world={info} />
+      <Surface world={WORLD} groundImg={moonSurfaceImg} />
+      {CHAPTERS.moon.map((title, i) => (
+        <Chapter key={i} index={i} title={title} world={WORLD}>
+          {i === 0 && (
+            <model-viewer
+              class="moon__model"
+              src={c1Model}
+              alt="Moon 3D model"
+              autoplay
+              camera-controls
+              touch-action="pan-y"
+              interaction-prompt="none"
+              camera-orbit="55deg 78deg auto"
+              disable-zoom
+              disable-pan
+              min-polar-angle="0deg"
+              max-polar-angle="180deg"
+              shadow-intensity="1"
+            />
+          )}
+        </Chapter>
       ))}
     </>
   )

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { DeepSpace } from '../Moon/Moon'
+import Galaxy from '../../components/World/Galaxy'
 import './Timeline.css'
 
 import surveyor from '../../assets/Timeline/surveyor 3.webp'
@@ -64,7 +64,7 @@ export default function Timeline() {
 
   return (
     <>
-      <DeepSpace sparkle />
+      <Galaxy sparkle />
       <section className="timeline" aria-label="Timeline" ref={root}>
         <header className="tl__head">
           <p className="tl__eyebrow">Relics of Space</p>

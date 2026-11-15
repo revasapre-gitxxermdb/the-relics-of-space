@@ -4,17 +4,20 @@ import Navbar from './components/Navbar/Navbar'
 import Home from './pages/Home/Home'
 import Timeline from './pages/Timeline/Timeline'
 import Moon from './pages/Moon/Moon'
+import Mars from './pages/Mars/Mars'
+import DeepSpace from './pages/DeepSpace/DeepSpace'
 
-const WORLD_ROUTES = ['moon', 'mars', 'deepspace']
+const PAGES = { timeline: Timeline, moon: Moon, mars: Mars, deepspace: DeepSpace }
 
 export default function App() {
   const route = useHashRoute()
+  const Page = PAGES[route] ?? Home
   return (
-    <div className={`page${WORLD_ROUTES.includes(route) || route === 'timeline' ? ' page--black' : ''}`}>
+    <div className={`page${route in PAGES ? ' page--black' : ''}`}>
       <div className="page__bg" aria-hidden="true" />
       <Navbar route={route} />
       <div className="page__view" key={route}>
-        {route === 'timeline' ? <Timeline /> : WORLD_ROUTES.includes(route) ? <Moon world={route} /> : <Home />}
+        <Page />
       </div>
     </div>
   )
