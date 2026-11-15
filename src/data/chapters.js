@@ -12,9 +12,9 @@ export const CHAPTERS = {
     'The Little Red Trailblazer (Sojourner)',
   ],
   deepSpace: [
-    'The 18-Karat Time Machine (JWST)',
+    'The 18-Karat Time Machine (James Webb Space Telescope)',
     'The Endless Void Wanderer (Voyager 1)',
     'The Silent Star-Stalker (Kepler)',
-    'The Ion-Engine Acrobat (Dawn)',
+    'Dawn — The Ion-Engine Acrobat',
   ],
 }
