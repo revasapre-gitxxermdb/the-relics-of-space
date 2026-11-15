@@ -32,19 +32,23 @@ export function slideTo(targetY, duration = SLIDE_MS) {
 export function enableSlides(selector) {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return () => {}
   const slides = () => [...document.querySelectorAll(selector)]
-  const tops = () => slides().map((el) => el.getBoundingClientRect().top + window.scrollY)
+  const maxY = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight)
+  // Every stop, clamped to what the page can really reach, always including the very top and bottom.
+  const tops = () => {
+    const m = maxY()
+    const all = [0, m, ...slides().map((el) => Math.min(m, Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY))))]
+    return [...new Set(all)].sort((a, b) => a - b)
+  }
 
   const go = (dir) => {
-    if (isSliding) return
-    if (slideGate.handle?.(dir)) return
-    const t = tops()
-    if (!t.length) return
+    if (isSliding) return true
+    if (slideGate.handle?.(dir)) return true
     const y = window.scrollY
-    let cur = 0
-    t.forEach((v, i) => { if (Math.abs(v - y) < Math.abs(t[cur] - y)) cur = i })
-    const next = cur + dir
-    if (next < 0 || next >= t.length) return false
-    slideTo(t[next])
+    const t = tops()
+    // Next stop in the direction of travel: never gets stuck, even between slides or at the page ends.
+    const target = dir > 0 ? t.find((v) => v > y + 2) : [...t].reverse().find((v) => v < y - 2)
+    if (target === undefined) return false
+    slideTo(target)
     return true
   }
 

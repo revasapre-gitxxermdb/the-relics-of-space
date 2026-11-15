@@ -1,12 +1,23 @@
 import { useEffect, useRef } from 'react'
+import { CHAPTERS } from '../../data/chapters'
 import { slideTo } from '../../utils/slideScroll'
 import '../../sections/Hero/Hero.css'
 import './World.css'
+
+const ORDER = [
+  { key: 'moon', name: 'Moon', chapters: 'moon' },
+  { key: 'mars', name: 'Mars', chapters: 'mars' },
+  { key: 'deepspace', name: 'Deep Space', chapters: 'deepSpace' },
+]
 
 // One scroll chapter: animated title, plus a "surface spacer" screen that can
 // hold page-specific content (e.g. the Moon's 3D model) via children.
 export default function Chapter({ index, title, world, children }) {
   let titleIndex = 0
+  const pos = ORDER.findIndex((w) => w.key === world.key)
+  const isLast = index === CHAPTERS[ORDER[pos].chapters].length - 1
+  const prev = ORDER[pos - 1]
+  const next = ORDER[pos + 1]
   const rootRef = useRef(null)
   const surfaceRef = useRef(null)
 
@@ -65,6 +76,18 @@ export default function Chapter({ index, title, world, children }) {
       </section>
       <section className="surface-spacer" ref={surfaceRef} aria-hidden={!children}>
         {children}
+        {isLast && (
+          <nav className="world-nav" aria-label="Change world">
+            <a className="world-nav__btn" href={prev ? `#/${prev.key}` : '#/'}>
+              ← Back{prev ? ` to ${prev.name}` : ' Home'}
+            </a>
+            {next && (
+              <a className="world-nav__btn world-nav__btn--next" href={`#/${next.key}`}>
+                Next: {next.name} →
+              </a>
+            )}
+          </nav>
+        )}
       </section>
     </div>
   )

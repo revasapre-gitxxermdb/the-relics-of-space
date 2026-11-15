@@ -119,6 +119,7 @@
   left: clamp(1rem, 9%, 10rem);
   bottom: 11vw; /* feet planted in the foreground of the terrain */
   height: min(52vh, 32vw);
+  aspect-ratio: 979 / 1606; /* box == image box, so the mouth % always lands on the smile */
   z-index: 2;
   pointer-events: none;
 }
@@ -127,19 +128,20 @@
   z-index: 1;
   display: block;
   height: 100%;
-  width: auto;
+  width: 100%;
+  object-fit: fill;
   filter: drop-shadow(0 0 14px rgba(190, 120, 255, 0.35));
 }
 /* Talking mouth, laid over the painted smile */
 .surface__mouth {
   position: absolute;
   z-index: 2;
-  left: 51.6%;
-  top: 40.6%;
+  left: 50.6%;
+  top: 40.4%;
   width: 8%;
   height: 2.6%;
   transform: translate(-50%, -50%) scaleY(0.12);
-  transform-origin: 50% 40%;
+  transform-origin: 50% 50%;
   border-radius: 50% 50% 55% 55% / 35% 35% 65% 65%;
   background: radial-gradient(ellipse at 50% 85%, #d0508f 0 28%, #3a0a35 62%);
   box-shadow: 0 0 0 1.5px #7a2fb8;
@@ -302,3 +304,35 @@
 .moon__model--c2 { opacity: var(--model2-o, 0); pointer-events: var(--model2-pe, none); }
 .moon__model--c3 { opacity: var(--model3-o, 0); pointer-events: var(--model3-pe, none); }
 .moon__model--c4 { width: min(72vw, 1320px); height: min(88vh, 840px); transform: translateX(110vw); translate: -50% 11vh; opacity: var(--model4-o, 0); pointer-events: var(--model4-pe, none); }
+/* Moon chapter 4 is a plain <model-viewer> (Mars's is an iframe driven in by JS), so keep it in place. */
+model-viewer.moon__model--c4 { transform: none; width: min(60vw, 1100px); height: min(75vh, 700px); translate: -50% -6vh; }
+
+/* Back / Next buttons: bottom of the last chapter of each world, fade in with that chapter's surface screen */
+.world-nav {
+  position: fixed;
+  bottom: clamp(0.8rem, 3vh, 2rem);
+  left: 50%;
+  z-index: 30;
+  display: flex;
+  gap: 1rem;
+  transform: translateX(-50%);
+  opacity: var(--model4-o, 0);
+  pointer-events: var(--model4-pe, none);
+}
+.world-nav__btn {
+  padding: 0.7em 1.5em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(10, 14, 30, 0.65);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-weight: 600;
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s, transform 0.25s;
+}
+.world-nav__btn:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-2px); }
+.world-nav__btn--next { background: linear-gradient(135deg, #8b3fd1, #a24be0); border-color: transparent; }
+.world-nav__btn--next:hover { background: linear-gradient(135deg, #9a4de0, #b25bf0); }
+@media (max-width: 520px) { .world-nav { gap: 0.5rem; } .world-nav__btn { padding: 0.6em 1em; } }

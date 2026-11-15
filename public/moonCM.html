@@ -344,16 +344,12 @@ cvs.addEventListener('pointermove',e=>{
   const p=ptrs.get(e.pointerId);if(!p)return;
   const dx=e.clientX-p.x,dy=e.clientY-p.y;
   if(ptrs.size===2){
-    p.x=e.clientX;p.y=e.clientY;const a=[...ptrs.values()];const d=Math.hypot(a[0].x-a[1].x,a[0].y-a[1].y);
-    if(pinch)dist=Math.min(60,Math.max(2.5,dist*pinch/d));pinch=d;return;
+    p.x=e.clientX;p.y=e.clientY;return; /* no pinch-zoom */
   }
   p.x=e.clientX;p.y=e.clientY;
-  if(p.b===2||e.shiftKey){
-    const r=new THREE.Vector3(),u=new THREE.Vector3();camera.matrixWorld.extractBasis(r,u,new THREE.Vector3());
-    const k=dist*.0014;target.addScaledVector(r,-dx*k).addScaledVector(u,dy*k);
-  }else{az-=dx*.0055;el=Math.min(1.45,Math.max(-.6,el+dy*.0055))}
+  az-=dx*.0055;el=Math.min(1.45,Math.max(-.6,el+dy*.0055)); /* rotate only: no zoom/pan */
 });
-cvs.addEventListener('wheel',e=>{e.preventDefault();dist=Math.min(60,Math.max(2.5,dist*Math.exp(e.deltaY*.0011)))},{passive:false});
+cvs.addEventListener('wheel',e=>{e.preventDefault()},{passive:false}); /* wheel zoom disabled */
 let auto=false;
 const $=id=>document.getElementById(id);
 $('bRot').onclick=()=>{auto=!auto;$('bRot').classList.toggle('on',auto)};

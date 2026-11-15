@@ -3,6 +3,8 @@ import { slideGate } from '../utils/slideScroll'
 
 // Plays one narration per chapter slide, with synced captions. `narrations` is
 // [{ src, captions, slide }]; returns the caption text currently on screen.
+const HINT = 'Click anywhere or press any key to start the narration'
+
 export default function useNarrations(narrations) {
   const [caption, setCaption] = useState('')
 
@@ -72,8 +74,21 @@ export default function useNarrations(narrations) {
         const { audio } = pl
         const onSlide = pl.isOnSlide()
         if (onSlide && pl.done) return
-        if (onSlide) { if (audio.paused && !audio.ended) audio.play().catch(() => {}) } // blocked until the visitor interacts
-        else if (!audio.paused || audio.currentTime) { audio.pause(); audio.currentTime = 0 }
+        if (onSlide) {
+          if (audio.paused && !audio.ended) {
+            audio.play().then(() => { pl.hinted = false; pl.lastIdx = -2 }).catch((err) => {
+              // Browser blocked autoplay (no click/key/touch yet): ask for one, then it starts by itself.
+              if (err && err.name === 'NotAllowedError' && !pl.hinted && pl.isOnSlide()) {
+                pl.hinted = true
+                setCaption(HINT)
+              }
+            })
+          }
+        } else {
+          if (pl.hinted) { pl.hinted = false; setCaption('') }
+          pl.done = false // left the slide: replay the narration next time (scrolling up or down)
+          if (!audio.paused || audio.currentTime) { audio.pause(); audio.currentTime = 0 }
+        }
       })
     }
     const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
@@ -84,10 +99,16 @@ export default function useNarrations(narrations) {
     const retry = setInterval(update, 500)
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('pointerdown', unlock)
+    window.addEventListener('pointerup', unlock)
+    window.addEventListener('mousedown', unlock)
+    window.addEventListener('click', unlock)
     window.addEventListener('keydown', unlock)
     window.addEventListener('touchend', unlock)
     window.addEventListener('wheel', unlock, { passive: true })
     return () => {
+      window.removeEventListener('pointerup', unlock)
+      window.removeEventListener('mousedown', unlock)
+      window.removeEventListener('click', unlock)
       slideGate.handle = null
       clearInterval(retry)
       window.removeEventListener('touchend', unlock)

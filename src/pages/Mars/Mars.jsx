@@ -26,20 +26,6 @@ const C1_CAPTIONS = [
   "But wait, explorers! Its MOXIE experiment converted Martian atmospheric carbon dioxide into oxygen, producing a total of 122 grams! What an incredible achievement!",
   "MOXIE completed its experiment in September 2023, but Perseverance is still exploring Mars! Amazing, isn't it? A robotic detective searching for ancient life while testing technology for future human explorers! Come on, explorers — our next Martian relic awaits!",
 ]
-const PLACEHOLDER_CAPTIONS = [
-  "Well, Earth explorers! Now, let's journey into the mysteries of DEEP SPACE and discover our golden time machine — James Webb Space Telescope!",
-  "Behold the golden giant — the James Webb Space Telescope!",
-  "Launched on December 25, 2021, JWST reached its destination near the Sun-Earth Lagrange Point 2, approximately 1.5 million kilometres from Earth, on January 24, 2022.",
-  "Its total payload mass is approximately 6,200 kilograms, and its primary mirror measures 6.5 metres across!",
-  "Look closely! Its primary mirror contains 18 hexagonal beryllium segments coated with gold. Together, they work like one giant mirror to collect faint light from distant objects.",
-  "A five-layer sunshield, approximately the size of a tennis court, protects its sensitive mirrors and instruments from the Sun's heat.",
-  "Its NIRCam observes near-infrared light, while MIRI observes mid-infrared wavelengths!",
-  "But why infrared? Because as the universe expands, light from extremely distant galaxies gets stretched to longer wavelengths.",
-  "JWST detects this infrared light to study some of the earliest galaxies and investigate the atmospheres of planets orbiting other stars — called exoplanets!",
-  "And here's a surprising fact! The gold coating on each mirror segment is only about 100 nanometres thick!",
-  "All that gold together weighs approximately 48 grams — about the mass of a golf ball!",
-  "Incredible, isn't it? This golden giant helps us explore the universe's oldest mysteries!",
-]
 const C2_CAPTIONS = [
   "And now, explorers, meet Curiosity — NASA's 899-kilogram robotic rover! Launched on November 26, 2011, it landed in Gale Crater on August 6, 2012. Its International Designator is 2011-070A, and its NASA NSSDC ID is 2011-070A! This rover measures approximately 3 metres long, 2.8 metres wide and 2.1 metres tall!",
   "But how did such a heavy rover land safely on Mars? NASA used an incredible technique called the Sky Crane! Rocket-powered thrusters slowed its descent while cables gently lowered Curiosity onto the Martian surface!",
@@ -62,7 +48,13 @@ const C3_CAPTIONS = [
   "Ingenuity became the first aircraft to achieve powered, controlled flight on another planet!",
   "What a flying pioneer! Come on, explorers — our next Martian relic awaits!",
 ]
-const C4_CAPTIONS = PLACEHOLDER_CAPTIONS
+const C4_CAPTIONS = [
+  "Earth explorers, meet a tiny robot that made history! This is Sojourner — the first wheeled rover to operate on another planet!",
+  "Sojourner travelled aboard NASA's Mars Pathfinder mission, which landed on Mars on July 4, 1997, at Ares Vallis! The rover rolled onto the Martian surface the next day, July 5, 1997! It had a mass of just 10.5 kilograms and measured approximately 65 centimetres long, 48 centimetres wide, and 30 centimetres tall!",
+  "Now, how did this little explorer move and investigate Mars? Its six-wheel Rocker-Bogie suspension helped it cross uneven terrain and climb over obstacles. It used solar panels for power, supported by primary batteries. Its key science instrument was the APXS — Alpha Proton X-ray Spectrometer — which analysed the elemental composition of Martian rocks and soil!",
+  "Here's the amazing part! Sojourner was designed for a seven-day mission, but it operated for an incredible 83 days! It reached a maximum speed of approximately one centimetre per second and travelled about 100 metres across the Martian surface!",
+  "After 83 days of rover operations, its last successful data transmission came on September 27, 1997. NASA officially terminated the Pathfinder mission on March 10, 1998. Sojourner's success helped establish the technology and engineering foundation for future Mars rovers. Small in size, but enormous in achievement! Come on, explorers — our next relic awaits!",
+]
 
 // One narration per chapter; `slide` is the index of that chapter's surface-spacer.
 const NARRATIONS = [

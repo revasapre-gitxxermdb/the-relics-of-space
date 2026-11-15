@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import c1Audio from '../../assets/moonChapters/MC1.mp3'
+﻿import c1Audio from '../../assets/moonChapters/MC1.mp3'
 import c2Audio from '../../assets/moonChapters/MC2.mp3'
 import c3Audio from '../../assets/moonChapters/MC3.mp3'
 import c4Audio from '../../assets/moonChapters/MC4.mp3'
@@ -12,7 +11,7 @@ import c4Model from '../../assets/moon/c4.glb'
 import { CHAPTERS } from '../../data/chapters'
 import Chapter from '../../components/World/Chapter'
 import Surface from '../../components/World/Surface'
-import { slideGate } from '../../utils/slideScroll'
+import useNarrations from '../../hooks/useNarrations'
 
 const WORLD = { key: 'moon', name: 'Moon', img: moonImg }
 
@@ -45,55 +44,28 @@ const C1_CAPTIONS = [
 ]
 
 const C2_CAPTIONS = [
-  "Now meet humanity's farthest ambassador — Voyager 1!",
-  "Launched on September 5, 1977, this spacecraft explored Jupiter and Saturn before continuing its journey toward interstellar space.",
-  "Its launch mass was approximately 815 kilograms!",
-  "It uses three Radioisotope Thermoelectric Generators, or RTGs, which produce electricity from heat released by radioactive Plutonium-238 decay.",
-  "Originally, Voyager carried 11 scientific instruments, including plasma wave and cosmic ray instruments to investigate its surrounding space.",
-  "Today, only two science instruments remain operational!",
-  "But its most famous object is the Golden Record — a 12-inch gold-plated copper phonograph disc containing sounds, music, greetings and images representing life on Earth!",
-  "On August 25, 2012, Voyager 1 crossed the heliopause and entered interstellar space!",
-  "It is the farthest human-made object, travelling more than 24 billion kilometres from Earth.",
-  "Imagine this — a radio message takes nearly 22.5 hours to reach it!",
-  "Even after decades in space, Voyager 1 continues its incredible journey through interstellar space!",
-  "What an extraordinary ambassador from Earth! Come on, explorers — our next deep-space relic awaits!",
+  "Look at this tiny explorer, Earth explorers! Meet CAPSTONE — a microwave-sized CubeSat weighing just 25 kilograms! Launched on June 28, 2022, its International Designator is 2022-070A, and its NORAD Catalog Number is 52914. But don't underestimate its size! This little spacecraft had a big mission — testing a special lunar orbit planned for NASA's Gateway space station!",
+  "But why test an orbit first? Because before sending a huge space station there, NASA needed to understand how this unusual orbit works! It's called a Near-Rectilinear Halo Orbit, or NRHO — an elongated path shaped by the combined gravity of Earth and the Moon.",
+  "Now, let's see how CAPSTONE navigates! It travels around the Moon in an approximately six-and-a-half-day orbit. Its CAPS navigation system communicates with NASA's Lunar Reconnaissance Orbiter, or LRO, to measure their distance and help calculate CAPSTONE's position!",
+  "And here's the historic achievement! CAPSTONE became the first spacecraft to successfully enter and operate in this special lunar orbit, helping confirm that it could work for future missions!",
+  "CAPSTONE completed its primary and extended mission objectives, and NASA's mission activities concluded in June 2026. Amazing, isn't it? A tiny CubeSat helped pave the way for a future space station around the Moon! Come on, explorers — our next relic awaits!",
 ]
 
 const C3_CAPTIONS = [
-  "Now, Earth explorers, let's discover the hidden planets orbiting distant stars with NASA's planet hunter — Kepler!",
-  "Meet the Kepler Space Telescope, launched on March 7, 2009, UTC!",
-  "Its spacecraft mass was approximately 1,039 kilograms, and its telescope had an aperture of 0.95 metres.",
-  "Its mission was to discover how common Earth-sized planets are around other stars, especially in their habitable zones!",
-  "Now, how did Kepler find these distant worlds?",
-  "It used a technique called the Transit Method.",
-  "When a planet passes in front of its star, it blocks a tiny amount of light, creating a small dip in the star's brightness.",
-  "Kepler detected these changes using its 95-megapixel photometer, containing 42 CCD detectors!",
-  "Kepler continuously observed stars in our Milky Way and, together with its extended K2 mission, studied more than half a million stars!",
-  "And the result? More than 2,600 confirmed exoplanets discovered!",
-  "Its observations transformed our understanding of planetary systems beyond our Solar System!",
-  "After nine years of space exploration, Kepler ran out of fuel and NASA officially retired the telescope on October 30, 2018.",
-  "Although its mission has ended, scientists continue studying its valuable data to discover more distant worlds!",
-  "What an incredible planet hunter! Come on, explorers — our next deep-space relic awaits!",
+  "Earth explorers, get ready for a historic moment! Meet Eagle, the Apollo 11 Lunar Module that carried Neil Armstrong and Buzz Aldrin to the Moon in 1969! Apollo 11 launched on July 16, 1969, and landed on July 20 at the Sea of Tranquility. Its International Designator is 1969-059C, and its NASA NSSDC ID is 69-059C!",
+  "But don't let its unusual shape fool you! Eagle was a powerful two-stage spacecraft! Its combined ascent and descent stages had a mass of approximately 15,103 kilograms, while the descent stage alone had a dry mass of 2,034 kilograms!",
+  "Now, let's discover how Eagle worked! Its descent engine produced a maximum thrust of approximately 44,000 newtons and could be throttled to control the lunar landing. Eagle also carried the Early Apollo Scientific Experiments Package, or EASEP, which included scientific instruments left behind on the Moon!",
+  "And here's the incredible achievement! Armstrong and Aldrin spent 21 hours and 36 minutes on the lunar surface and collected 21.55 kilograms of Moon samples! They made history as the first humans to walk on the Moon!",
+  "But wait, explorers! Eagle left behind something that is still scientifically useful — a Laser Ranging Retroreflector! Even today, observatories on Earth send laser pulses toward its mirrors and measure the reflected signals to calculate the distance between Earth and the Moon!",
+  "Eagle's historic mission was completed! Its descent stage remains at the Apollo 11 landing site, while the laser reflector continues to support scientific measurements. Amazing, isn't it? A spacecraft that helped humans take their first steps on another world! Come on, explorers — our next relic awaits!",
 ]
 
 const C4_CAPTIONS = [
-  "And finally, Earth explorers, meet Dawn — the spacecraft with one of the most remarkable propulsion systems ever used for deep-space exploration!",
-  "Launched on September 27, 2007, Dawn had a launch mass of 1,217.7 kilograms, including its fuel.",
-  "Without propellant, the spacecraft itself weighed about 747.1 kilograms.",
-  "Its International Designator, also known as its COSPAR ID, was 2007-043A. Its NASA NSSDC ID was also 2007-043A.",
-  "The spacecraft body measured approximately 1.64 meters long, 1.27 meters wide and 1.77 meters tall.",
-  "With its solar arrays fully extended, its wingspan reached an incredible 19.7 meters!",
-  "Its mission was to orbit and compare two of the largest objects in the asteroid belt — asteroid Vesta and dwarf planet Ceres.",
-  "But how did Dawn travel such enormous distances?",
-  "It used a revolutionary Xenon Ion Propulsion System, powered by electricity generated from its two large solar arrays.",
-  "Here's how it worked: electricity first converted xenon gas into charged particles called ions.",
-  "Powerful electric fields then accelerated these ions and expelled them through the thruster, producing a gentle but continuous thrust that pushed the spacecraft forward.",
-  "Dawn carried three ion thrusters, but operated only one at a time. Each produced a maximum thrust of 91 millinewtons — very small, but extremely fuel-efficient!",
-  "Dawn also carried three main scientific instruments: a framing camera, a visible and infrared mapping spectrometer, and a gamma ray and neutron detector.",
-  "These instruments helped scientists study the surface, composition, minerals and internal structure of Vesta and Ceres.",
-  "And here's its historic achievement: Dawn became the first spacecraft ever to orbit two different extraterrestrial bodies!",
-  "After an extraordinary journey, NASA officially concluded its mission on November 1, 2018, after Dawn ran out of the hydrazine fuel needed to control its orientation.",
-  "Today, Dawn remains in orbit around Ceres — a silent relic of extraordinary engineering!",
+  "Meet Surveyor 3, NASA's robotic Moon explorer! Launched on April 17, 1967, it landed on April 20 in Oceanus Procellarum, the Ocean of Storms! Its International Designator and NASA NSSDC ID are both 1967-035A and 67-035A, respectively. Its launch mass was approximately 998 kilograms!",
+  "This lander stood approximately 3 metres tall and had a width of 4.2 metres with its landing legs extended! It used solar cells and silver-zinc batteries for power. Its Soil Mechanics Surface Sampler had an extendable arm reaching approximately 1.5 metres and could dig up to 18 centimetres deep!",
+  "Surveyor 3 also carried a television camera with 200-line and 600-line imaging modes. It transmitted 6,326 pictures of the lunar surface!",
+  "But here's the unbelievable part! In November 1969, Apollo 12 astronauts Pete Conrad and Alan Bean visited Surveyor 3, approximately 180 metres from their landing site! They recovered its camera system, soil scoop and other components and brought them back to Earth for examination!",
+  "Surveyor 3's last communication was on May 4, 1967, but its scientific legacy continued through Apollo 12! Amazing, isn't it? A robotic explorer helped prepare humans for lunar exploration! Come on, explorers — our next relic awaits!",
 ]
 
 // One narration per chapter; `slide` is the index of that chapter's surface-spacer.
@@ -105,106 +77,7 @@ const NARRATIONS = [
 ]
 
 export default function Moon() {
-  const [caption, setCaption] = useState('')
-
-  // Each chapter's narration plays when its 3D model slide is reached; stops when leaving it.
-  useEffect(() => {
-    let raf = 0
-    const slideEl = (n) => document.querySelectorAll('.surface-spacer')[n]
-    const players = NARRATIONS.map(({ src, captions, slide }) => {
-      const audio = new Audio(src)
-      const total = captions.reduce((n, s) => n + s.length, 0)
-      const pl = { audio, captions, total, done: false, lastIdx: -2, lastStep: 0 }
-      pl.isOnSlide = () => {
-        const sp = slideEl(slide)
-        return !!sp && Math.abs(sp.getBoundingClientRect().top) < window.innerHeight * 0.225
-      }
-      pl.index = () => {
-        const pos = (audio.currentTime / audio.duration) * total
-        let acc = 0
-        for (let i = 0; i < captions.length; i++) {
-          acc += captions[i].length
-          if (pos < acc) return i
-        }
-        return captions.length - 1
-      }
-      pl.clear = () => { pl.lastIdx = -1; setCaption('') }
-      pl.show = () => {
-        const dur = audio.duration
-        if (audio.paused || !isFinite(dur) || dur <= 0) {
-          if (pl.lastIdx !== -1) { pl.lastIdx = -1; setCaption('') }
-          return
-        }
-        const idx = pl.index()
-        if (idx !== pl.lastIdx) { pl.lastIdx = idx; setCaption(captions[idx]) }
-      }
-      pl.onEnded = () => { pl.done = true; pl.clear() } // finished once: don't lock the visitor again
-      audio.addEventListener('timeupdate', pl.show)
-      audio.addEventListener('pause', pl.clear)
-      audio.addEventListener('ended', pl.onEnded)
-      return pl
-    })
-
-    // While on a slide, each scroll step moves one caption (seeking the narration to it).
-    // Only after the last caption is showing does the next scroll go to the next chapter.
-    // If the audio isn't playing (autoplay blocked), don't trap the visitor.
-    slideGate.handle = (dir) => {
-      const pl = players.find((p) => p.isOnSlide())
-      if (!pl) return false
-      const { audio, captions, total } = pl
-      if (pl.done || audio.paused || audio.ended || !isFinite(audio.duration)) return false
-      const cur = pl.index()
-      if (dir > 0 && cur >= captions.length - 1) { pl.done = true; return false }
-      if (dir < 0 && cur <= 0) return false
-      const now = performance.now()
-      if (now - pl.lastStep < 700) return true // swallow wheel/trackpad bursts
-      pl.lastStep = now
-      const next = cur + dir
-      let before = 0
-      for (let i = 0; i < next; i++) before += captions[i].length
-      audio.currentTime = (before / total) * audio.duration + 0.02
-      pl.lastIdx = next
-      setCaption(captions[next])
-      return true
-    }
-    const update = () => {
-      raf = 0
-      players.forEach((pl) => {
-        const { audio } = pl
-        const onSlide = pl.isOnSlide()
-        if (onSlide && pl.done) return
-        if (onSlide) { if (audio.paused && !audio.ended) audio.play().catch(() => {}) } // blocked until the visitor interacts
-        else if (!audio.paused || audio.currentTime) { audio.pause(); audio.currentTime = 0 }
-      })
-    }
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update) }
-    const unlock = () => update()
-    update()
-    // Autoplay is allowed once the page has had any click/key/touch (e.g. entering this world).
-    // If the browser still blocked it, keep retrying while on the slide so it starts by itself.
-    const retry = setInterval(update, 500)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('pointerdown', unlock)
-    window.addEventListener('keydown', unlock)
-    window.addEventListener('touchend', unlock)
-    window.addEventListener('wheel', unlock, { passive: true })
-    return () => {
-      slideGate.handle = null
-      clearInterval(retry)
-      window.removeEventListener('touchend', unlock)
-      window.removeEventListener('wheel', unlock)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('pointerdown', unlock)
-      window.removeEventListener('keydown', unlock)
-      cancelAnimationFrame(raf)
-      players.forEach((pl) => {
-        pl.audio.removeEventListener('timeupdate', pl.show)
-        pl.audio.removeEventListener('pause', pl.clear)
-        pl.audio.removeEventListener('ended', pl.onEnded)
-        pl.audio.pause()
-      })
-    }
-  }, [])
+  const caption = useNarrations(NARRATIONS)
 
   return (
     <>

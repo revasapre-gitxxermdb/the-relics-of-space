@@ -11,7 +11,7 @@ export default function useHashRoute() {
   useEffect(() => {
     const onHash = () => {
       setRoute(get())
-      window.scrollTo(0, 0)
+      window.scrollTo({ top: 0, behavior: 'instant' })
     }
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
