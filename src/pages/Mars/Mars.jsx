@@ -19,6 +19,14 @@ const WORLD = { key: 'mars', name: 'Mars', img: marsImg }
 // Captions per chapter (currently the same text for all four - replace each list when the scripts differ).
 // Each line's on-screen time is proportional to its length, spread across the real audio duration.
 const C1_CAPTIONS = [
+  "Well, Earth explorers! Our next destination is the Red Planet — MARS! A mysterious world full of ancient secrets! Ready? Let's meet its robotic detective — Perseverance!",
+  "Zzzzt! Meet Perseverance, nicknamed Percy! Launched on July 30, 2020, NASA's 1,025-kilogram rover landed in Jezero Crater on February 18, 2021. Its International Designator is 2020-052A!",
+  "But why did NASA choose Jezero Crater? Billions of years ago, this region contained a lake and an ancient river delta! Scientists are searching its rocks for clues of possible ancient microbial life.",
+  "Now, let's discover its technology! SuperCam fires a laser at rocks from up to 7 metres away to study their chemical composition. Its robotic arm drills rock cores and stores samples in special tubes for possible future return to Earth!",
+  "But wait, explorers! Its MOXIE experiment converted Martian atmospheric carbon dioxide into oxygen, producing a total of 122 grams! What an incredible achievement!",
+  "MOXIE completed its experiment in September 2023, but Perseverance is still exploring Mars! Amazing, isn't it? A robotic detective searching for ancient life while testing technology for future human explorers! Come on, explorers — our next Martian relic awaits!",
+]
+const PLACEHOLDER_CAPTIONS = [
   "Well, Earth explorers! Now, let's journey into the mysteries of DEEP SPACE and discover our golden time machine — James Webb Space Telescope!",
   "Behold the golden giant — the James Webb Space Telescope!",
   "Launched on December 25, 2021, JWST reached its destination near the Sun-Earth Lagrange Point 2, approximately 1.5 million kilometres from Earth, on January 24, 2022.",
@@ -32,7 +40,13 @@ const C1_CAPTIONS = [
   "All that gold together weighs approximately 48 grams — about the mass of a golf ball!",
   "Incredible, isn't it? This golden giant helps us explore the universe's oldest mysteries!",
 ]
-const C2_CAPTIONS = C1_CAPTIONS
+const C2_CAPTIONS = [
+  "And now, explorers, meet Curiosity — NASA's 899-kilogram robotic rover! Launched on November 26, 2011, it landed in Gale Crater on August 6, 2012. Its International Designator is 2011-070A, and its NASA NSSDC ID is 2011-070A! This rover measures approximately 3 metres long, 2.8 metres wide and 2.1 metres tall!",
+  "But how did such a heavy rover land safely on Mars? NASA used an incredible technique called the Sky Crane! Rocket-powered thrusters slowed its descent while cables gently lowered Curiosity onto the Martian surface!",
+  "Now, let's discover its technology! Curiosity uses an MMRTG nuclear power system, which converts heat from Plutonium-238's natural radioactive decay into electricity. Its ChemCam fires a laser at rocks to study their chemical composition, while its SAM laboratory uses ovens and scientific instruments to analyse rock samples and investigate organic molecules!",
+  "But here's an amazing discovery! Curiosity found evidence that Gale Crater once contained an ancient freshwater lake environment with chemical ingredients and conditions suitable for microbial life!",
+  "Curiosity is still actively exploring Mars and climbing the layered slopes of Mount Sharp! Amazing, isn't it? This robotic climber is uncovering the Red Planet's ancient watery history! Come on, explorers — our next Martian relic awaits!",
+]
 const C3_CAPTIONS = [
   "Earth explorers, can anything fly on Mars? Let's meet the little pioneer that proved it could — Ingenuity!",
   "Vroooom! Meet Ingenuity, NASA's tiny Mars helicopter!",
@@ -48,7 +62,7 @@ const C3_CAPTIONS = [
   "Ingenuity became the first aircraft to achieve powered, controlled flight on another planet!",
   "What a flying pioneer! Come on, explorers — our next Martian relic awaits!",
 ]
-const C4_CAPTIONS = C1_CAPTIONS
+const C4_CAPTIONS = PLACEHOLDER_CAPTIONS
 
 // One narration per chapter; `slide` is the index of that chapter's surface-spacer.
 const NARRATIONS = [
@@ -98,6 +112,33 @@ export default function Mars() {
       drive?.cancel()
       window.removeEventListener('scroll', check)
       mv.removeEventListener('load', onLoad)
+    }
+  }, [])
+
+  // Chapter 4 rover drives in from the right when its slide is reached, parks, and leaves when scrolled away.
+  useEffect(() => {
+    const el = document.querySelector('.moon__model--c4')
+    if (!el) return
+    let here = false
+    let anim = null
+    const check = () => {
+      const pe = getComputedStyle(document.documentElement).getPropertyValue('--model4-pe').trim()
+      if (pe === 'auto' && !here) {
+        here = true
+        anim = el.animate(
+          [{ transform: 'translateX(110vw)' }, { transform: 'translateX(0)' }],
+          { duration: 3500, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' }
+        )
+      } else if (pe !== 'auto' && here) {
+        here = false
+        anim?.cancel(); anim = null
+      }
+    }
+    window.addEventListener('scroll', check, { passive: true })
+    check()
+    return () => {
+      anim?.cancel()
+      window.removeEventListener('scroll', check)
     }
   }, [])
 
@@ -151,6 +192,15 @@ export default function Mars() {
               disable-zoom
               disable-pan
               shadow-intensity="1"
+            />
+          )}
+          {i === 3 && (
+            <iframe
+              className="moon__model moon__model--c4"
+              src="/marseC4.html"
+              title="Sojourner rover 3D model"
+              allowTransparency="true"
+              loading="eager"
             />
           )}
         </Chapter>

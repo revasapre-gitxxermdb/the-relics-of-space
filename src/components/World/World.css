@@ -284,7 +284,8 @@
   filter: drop-shadow(0 0 22px rgba(150, 140, 255, 0.4));
 }
 
-.moon__model--c1 { border: 0; color-scheme: normal; }
+.moon__model--c1,
+.moon__model--c4 { border: 0; color-scheme: normal; }
 .moon__model--c1,
 .moon__model--c2,
 .moon__model--c3,
@@ -300,4 +301,4 @@
 .moon__model--c4 { left: 64%; translate: -50% -6vh; }
 .moon__model--c2 { opacity: var(--model2-o, 0); pointer-events: var(--model2-pe, none); }
 .moon__model--c3 { opacity: var(--model3-o, 0); pointer-events: var(--model3-pe, none); }
-.moon__model--c4 { translate: -50% -1vh; opacity: var(--model4-o, 0); pointer-events: var(--model4-pe, none); }
+.moon__model--c4 { width: min(72vw, 1320px); height: min(88vh, 840px); transform: translateX(110vw); translate: -50% 11vh; opacity: var(--model4-o, 0); pointer-events: var(--model4-pe, none); }
