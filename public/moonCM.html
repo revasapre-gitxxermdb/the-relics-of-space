@@ -349,7 +349,10 @@ cvs.addEventListener('pointermove',e=>{
   p.x=e.clientX;p.y=e.clientY;
   az-=dx*.0055;el=Math.min(1.45,Math.max(-.6,el+dy*.0055)); /* rotate only: no zoom/pan */
 });
-cvs.addEventListener('wheel',e=>{e.preventDefault()},{passive:false}); /* wheel zoom disabled */
+/* wheel zoom disabled; the wheel / arrow keys drive the parent page's slide scroll instead (events don't cross iframes) */
+function toParent(ev){try{if(window.parent&&window.parent!==window)window.parent.dispatchEvent(ev)}catch(_){}}
+addEventListener('wheel',e=>{e.preventDefault();toParent(new window.parent.WheelEvent('wheel',{deltaY:e.deltaY,deltaX:e.deltaX,deltaMode:e.deltaMode,cancelable:true}))},{passive:false});
+addEventListener('keydown',e=>{if(['ArrowDown','ArrowUp','PageDown','PageUp',' '].includes(e.key)){e.preventDefault();toParent(new window.parent.KeyboardEvent('keydown',{key:e.key,cancelable:true}))}});
 let auto=false;
 const $=id=>document.getElementById(id);
 $('bRot').onclick=()=>{auto=!auto;$('bRot').classList.toggle('on',auto)};

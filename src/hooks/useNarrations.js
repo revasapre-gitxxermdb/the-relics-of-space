@@ -1,93 +1,117 @@
 import { useEffect, useState } from 'react'
 import { slideGate } from '../utils/slideScroll'
 
-// Plays one narration per chapter slide, with synced captions. `narrations` is
+// One narration per chapter slide, played ONE LINE AT A TIME. `narrations` is
 // [{ src, captions, slide }]; returns the caption text currently on screen.
+// Arriving on a slide speaks only the first line and stops. Each scroll step then speaks
+// only the next line. After the last line, the next scroll moves on to the next chapter.
+// (Line boundaries are estimated from caption length across the real audio duration.)
 const HINT = 'Click anywhere or press any key to start the narration'
 
-export default function useNarrations(narrations) {
+export default function useNarrations(narrations, { holdUntilEnd = false } = {}) {
   const [caption, setCaption] = useState('')
 
-  // Each chapter's narration plays when its 3D model slide is reached; stops when leaving it.
   useEffect(() => {
     let raf = 0
+    let current = null // the player whose caption is on screen
+    const show = (pl, text) => { current = pl; setCaption(text) }
+    const clearFor = (pl) => { if (current === pl) { current = null; setCaption('') } }
     const slideEl = (n) => document.querySelectorAll('.surface-spacer')[n]
+
     const players = narrations.map(({ src, captions, slide }) => {
       const audio = new Audio(src)
+      audio.preload = 'auto'
       const total = captions.reduce((n, s) => n + s.length, 0)
-      const pl = { audio, captions, total, done: false, lastIdx: -2, lastStep: 0 }
+      const pl ={ audio, captions, line: 0, active: false, done: false, pending: false, hinted: false, lastStep: 0 }
       pl.isOnSlide = () => {
         const sp = slideEl(slide)
         return !!sp && Math.abs(sp.getBoundingClientRect().top) < window.innerHeight * 0.225
       }
-      pl.index = () => {
-        const pos = (audio.currentTime / audio.duration) * total
-        let acc = 0
-        for (let i = 0; i < captions.length; i++) {
-          acc += captions[i].length
-          if (pos < acc) return i
-        }
-        return captions.length - 1
+      // Where line i begins in the audio (seconds); line `last + 1` is the end of the audio.
+      pl.lineStart = (i) => {
+        let before = 0
+        for (let k = 0; k < i; k++) before += captions[k].length
+        return (before / total) * audio.duration
       }
-      pl.clear = () => { pl.lastIdx = -1; setCaption('') }
-      pl.show = () => {
-        const dur = audio.duration
-        if (audio.paused || !isFinite(dur) || dur <= 0) {
-          if (pl.lastIdx !== -1) { pl.lastIdx = -1; setCaption('') }
-          return
-        }
-        const idx = pl.index()
-        if (idx !== pl.lastIdx) { pl.lastIdx = idx; setCaption(captions[idx]) }
+      // Speak only line i: seek to its start, show its caption, play (the tick below stops it at its end).
+      pl.playLine = (i) => {
+        pl.line = i
+        if (i > 0 && isFinite(audio.duration)) audio.currentTime = pl.lineStart(i) + 0.02
+        else if (i === 0) audio.currentTime = 0
+        show(pl, captions[i])
+        return audio.play()
       }
-      pl.onEnded = () => { pl.done = true; pl.clear() } // finished once: don't lock the visitor again
-      audio.addEventListener('timeupdate', pl.show)
-      audio.addEventListener('pause', pl.clear)
-      audio.addEventListener('ended', pl.onEnded)
+      pl.reset = () => {
+        pl.active = false
+        pl.done = false
+        pl.line = 0
+        if (!audio.paused || audio.currentTime) { audio.pause(); audio.currentTime = 0 }
+      }
       return pl
     })
 
-    // While on a slide, each scroll step moves one caption (seeking the narration to it).
-    // Only after the last caption is showing does the next scroll go to the next chapter.
-    // If the audio isn't playing (autoplay blocked), don't trap the visitor.
+    // Stop each line when it reaches the start of the next one (so it never reads past its own line).
+    const tick = setInterval(() => {
+      players.forEach((pl) => {
+        const { audio } = pl
+        if (!pl.active || audio.paused || !isFinite(audio.duration)) return
+        if (pl.line < pl.captions.length - 1 && audio.currentTime >= pl.lineStart(pl.line + 1)) audio.pause()
+      })
+    }, 40)
+
+    // Each scroll step on a slide speaks the next (or previous) line. Past the last line, scroll moves on.
+    // If the narration never started (autoplay blocked), don't trap the visitor.
     slideGate.handle = (dir) => {
       const pl = players.find((p) => p.isOnSlide())
       if (!pl) return false
-      const { audio, captions, total } = pl
-      if (pl.done || audio.paused || audio.ended || !isFinite(audio.duration)) return false
-      const cur = pl.index()
-      if (dir > 0 && cur >= captions.length - 1) { pl.done = true; return false }
-      if (dir < 0 && cur <= 0) return false
+      // The first line is still starting up: hold the scroll instead of skipping the whole chapter.
+      if (pl.pending && !pl.done) return true
+      if (!pl.active || pl.done || !isFinite(pl.audio.duration)) return false
+      const last = pl.captions.length - 1
+      if (dir > 0 && pl.line >= last) {
+        // Optionally hold the visitor here until the last line has finished speaking.
+        if (holdUntilEnd && !pl.audio.paused && !pl.audio.ended) return true
+        pl.done = true
+        return false
+      }
+      if (dir < 0 && pl.line <= 0) return false
       const now = performance.now()
-      if (now - pl.lastStep < 700) return true // swallow wheel/trackpad bursts
+      if (now - pl.lastStep < 350) return true // swallow wheel/trackpad bursts
       pl.lastStep = now
-      const next = cur + dir
-      let before = 0
-      for (let i = 0; i < next; i++) before += captions[i].length
-      audio.currentTime = (before / total) * audio.duration + 0.02
-      pl.lastIdx = next
-      setCaption(captions[next])
+      pl.audio.pause()
+      pl.playLine(pl.line + dir).catch(() => {})
       return true
     }
+
     const update = () => {
       raf = 0
       players.forEach((pl) => {
-        const { audio } = pl
-        const onSlide = pl.isOnSlide()
-        if (onSlide && pl.done) return
-        if (onSlide) {
-          if (audio.paused && !audio.ended) {
-            audio.play().then(() => { pl.hinted = false; pl.lastIdx = -2 }).catch((err) => {
-              // Browser blocked autoplay (no click/key/touch yet): ask for one, then it starts by itself.
-              if (err && err.name === 'NotAllowedError' && !pl.hinted && pl.isOnSlide()) {
-                pl.hinted = true
-                setCaption(HINT)
-              }
-            })
+        if (pl.isOnSlide()) {
+          if (pl.done || pl.active || pl.pending) return
+          // No click / key / touch on the page yet: the browser won't allow sound. Say so right away
+          // (on every chapter); the first click or key press starts this slide's narration by itself.
+          if (navigator.userActivation && !navigator.userActivation.hasBeenActive) {
+            if (!pl.hinted) { pl.hinted = true; show(pl, HINT) }
+            return
           }
+          pl.pending = true
+          pl.playLine(0).then(() => {
+            pl.pending = false
+            pl.hinted = false
+            if (pl.isOnSlide()) pl.active = true
+            else { clearFor(pl); pl.reset() } // scrolled away while the play request was pending
+          }).catch((err) => {
+            pl.pending = false
+            // Browser blocked autoplay (no click/key/touch yet): ask for one, then it starts by itself.
+            if (err && err.name === 'NotAllowedError' && !pl.hinted && pl.isOnSlide()) {
+              pl.hinted = true
+              show(pl, HINT)
+            }
+          })
         } else {
-          if (pl.hinted) { pl.hinted = false; setCaption('') }
-          pl.done = false // left the slide: replay the narration next time (scrolling up or down)
-          if (!audio.paused || audio.currentTime) { audio.pause(); audio.currentTime = 0 }
+          // Left the slide: stop, and replay from the first line next time (scrolling up or down).
+          if (pl.active || pl.hinted) { pl.hinted = false; clearFor(pl) }
+          pl.reset()
         }
       })
     }
@@ -111,18 +135,14 @@ export default function useNarrations(narrations) {
       window.removeEventListener('click', unlock)
       slideGate.handle = null
       clearInterval(retry)
+      clearInterval(tick)
       window.removeEventListener('touchend', unlock)
       window.removeEventListener('wheel', unlock)
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('pointerdown', unlock)
       window.removeEventListener('keydown', unlock)
       cancelAnimationFrame(raf)
-      players.forEach((pl) => {
-        pl.audio.removeEventListener('timeupdate', pl.show)
-        pl.audio.removeEventListener('pause', pl.clear)
-        pl.audio.removeEventListener('ended', pl.onEnded)
-        pl.audio.pause()
-      })
+      players.forEach((pl) => pl.audio.pause())
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

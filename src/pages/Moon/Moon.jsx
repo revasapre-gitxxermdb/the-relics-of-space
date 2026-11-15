@@ -77,7 +77,7 @@ const NARRATIONS = [
 ]
 
 export default function Moon() {
-  const caption = useNarrations(NARRATIONS)
+  const caption = useNarrations(NARRATIONS, { holdUntilEnd: true })
 
   return (
     <>
